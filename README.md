@@ -1,5 +1,5 @@
 ### Um encurtador de URLS
-
+Antes de começar gostaria de pedir desculpas pela apresentação do frontend porém imagino que esse não é o objetivo principal.
 Edmar de Oliveira Sa Filho   
 
 
