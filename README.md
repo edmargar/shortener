@@ -1,5 +1,6 @@
 ### Um encurtador de URLS
 Antes de começar gostaria de pedir desculpas pela apresentação do frontend porém imagino que esse não é o objetivo principal.
+
 Edmar de Oliveira Sa Filho   
 
 
@@ -7,7 +8,7 @@ Edmar de Oliveira Sa Filho
 Clone o repositório e acesse a pasta:
 ```shell
 git clone https://github.com/edmargar/shortener.git
-cd mobi2buy
+cd shortener
 ```
 
 Crie um ambiente virtual e ative-o:
