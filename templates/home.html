@@ -1,0 +1,97 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block title %}
+    Encurtador de URL
+{% endblock %}
+
+{% block content %}
+<div class="mdl-grid">
+    <div class="mdl-cell mdl-cell--4-col">
+    <div class="demo-card-wide mdl-card mdl-shadow--2dp">
+        <div class="mdl-card__title">
+            <h2 class="mdl-card__title-text">Encurtador de URLS</h2>
+        </div>
+        <div class="mdl-card__supporting-text">
+    {% if user.is_authenticated %}  
+        <form action="." method="post" id="shorten-url">
+            <div class="mdl-textfield mdl-js-textfield">
+            <input class="mdl-textfield__input" type="text" name='url_input'/>
+            <label class="mdl-textfield__label" for="url">URL:</label>
+            </div>
+        </div>
+            <br>
+                {% csrf_token %} {{ form.as_p }}
+                <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored" type="submit" id="submit-button" onClick="refreshPage()">Encurtar link</button>
+
+        </form>
+    </div>
+    </div>
+    <div class="card">
+        <h2>Lista de links encurtados:</h2>
+        <table class="mdl-data-table mdl-js-data-table mdl-data-table--selectable mdl-shadow--2dp" id="links-table">
+             <thead>
+                <tr>
+                    <th>URL</th>
+                    <th>URL encurtada</th>
+                    <th>Criada em</th>
+                    <th>Expira em</th>
+                </tr>
+            </thead>
+        </table>
+
+    </div>
+        <p><a href="{% url 'logout' %}">Fazer logout</a></p>
+        
+    {% else %}
+        <p>Você não está logado.</p>
+        <a href="{% url 'login' %}">Fazer login</a>
+        <br>
+        <a href="{% url 'signup' %}">Criar uma conta</a>
+    {% endif %}
+</div>
+    {% block javascript %}
+
+    <script>
+        
+        $('#submit-button').click(function(event) {
+            event.preventDefault();
+            $.ajax({
+                url: '{% url "shortener" %}',
+                type: 'post',
+                dataType: 'json',
+                data: $('form#shorten-url').serialize(),
+                success: function(data) {}
+            });
+        });
+
+        $(function() {
+            $.ajax({
+                url: '{% url "links" %}',
+                dataType: 'json',
+                type: 'get',
+                cache: false,
+                success: function(data) {
+                    var event_data = '';
+                    $.each(data.links, function(index, value) {                            
+                        event_data += '<tr>';
+                        event_data += '<td><a href="' + value.url + '">' + value.url + '</td>';
+                        event_data += '<td><a href="' + '{% url "redirect" shortened_url=123 %}'.replace(/123/, value.shortened_url) + '">' + value.shortened_url + '</td>';
+                        event_data += '<td>' + value.created_at.slice(0, -8) + '</td>';
+                        event_data += '<td>' + value.expires_at.slice(0, -8) + '</td>';
+                        event_data += '</tr>';
+                    });
+                    $("#links-table").append(event_data);
+                },
+                error: function(d) {}
+            });
+        });
+
+        function refreshPage() {
+            window.location.reload();
+        } 
+
+    </script>
+    {% endblock javascript %}
+{% endblock %}
